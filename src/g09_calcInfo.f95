@@ -2,7 +2,7 @@
 !   Get information about a Gaussian 09 calculation from the           !
 !   formatted checkpoint file.                                         !
 !**********************************************************************!
-subroutine g09_init( fch )
+subroutine g09_calcInfo( fch )
     use g09_commonvar
     implicit none
 
