@@ -31,7 +31,7 @@ subroutine g09_hessian( fch )
     do
         read( fno, '(a)', end = 1001 ), read_line
         if ( index( read_line , 'Cartesian Force Constants' ) .ne. 0 ) then
-            read( fno, '(5E16.8)' ) ((hessian(i,j), j = i, g09_task_dof  ), i = 1, g09_task_dof )
+            read( fno, '(5E16.8)' ) ((hessian(j,i), j = 1, i  ), i = 1, g09_task_dof )
             exit
         end if
     end do
