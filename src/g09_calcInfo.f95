@@ -47,6 +47,7 @@ subroutine g09_calcInfo( fch )
 
 
     ! allocate space for the atom information and read it in
+    if ( allocated( g09_atom )) deallocate(g09_atom)
     allocate( g09_atom( g09_task_numAtoms ) )
 
     ! read the atomic numbers
