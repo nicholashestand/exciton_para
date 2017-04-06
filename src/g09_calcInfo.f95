@@ -94,6 +94,7 @@ subroutine g09_calcInfo( fch )
         read( fno, '(a)', end = 1006 ), read_line
         if ( index( read_line, 'Shell types' ) .ne. 0 ) then
             read( read_line, '(49x, i12)' ), g09_task_numAOShells
+            if ( allocated( g09_AOShell ) ) deallocate( g09_AOShell )
             allocate( g09_AOShell( g09_task_numAOShells ) )
             read( fno, '(6i12)' ) g09_AOShell(:)%typ
             exit
