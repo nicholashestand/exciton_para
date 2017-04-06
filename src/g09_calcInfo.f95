@@ -1,6 +1,7 @@
 !**********************************************************************!
 !   Get information about a Gaussian 09 calculation from the           !
-!   formatted checkpoint file.                                         !
+!   formatted checkpoint file. If not already, all quantities are      !
+!   converted to atomic units                                          !
 !**********************************************************************!
 subroutine g09_calcInfo( fch )
     use g09_commonvar
@@ -77,6 +78,8 @@ subroutine g09_calcInfo( fch )
             exit
         end if
     end do
+    ! convert from amu to electron mass
+    g09_atom(:)%mass = g09_atom(:)%mass * AMU_to_electronMass
 
 
 
