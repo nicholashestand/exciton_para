@@ -1,3 +1,6 @@
 *.fch
 *.out
 /obj/
+*.exe
+*.chk
+*.gjf
