@@ -45,4 +45,10 @@ module g09_commonvar
     real(8), allocatable :: overlap(:,:)
     real(8), allocatable :: cic(:,:)
 
+    ! constants
+    real(8), parameter :: pi = 4.d0*datan(1.d0)               ! pi
+    real(8), parameter :: AMU_to_electronMass = 1822.88839d0  ! atomic mass units to electron mass units
+    real(8), parameter :: hartree_to_cm = 219474.6313702d0    ! hartree to wavenumber
+    real(8), parameter :: au_to_mdyneA  = 15.569141d0         ! hartree per bohr**2 to mdyne per A
+                        
 end module

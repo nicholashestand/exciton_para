@@ -16,7 +16,7 @@ subroutine g09_calcInfo( fch )
     ! check that the formatted checkpoint file exists
     inquire( file = fch, exist = exists )
     if ( .not. exists ) then
-        print'(3a)', ' Formatted checkpoint file ', fch, &
+        print'(3a)', ' Formatted checkpoint file ', trim(adjustl(fch)), &
                      ' not found.'
         stop
     end if
