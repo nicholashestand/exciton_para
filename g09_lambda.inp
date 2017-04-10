@@ -1,0 +1,15 @@
+# Sample input file for the g09_lambda program
+# It requires the names of the four formatted
+# checkpoint files from the Gaussian Calculations
+ground_fch          'test_g.fch'   # ground state
+excited_fch         'test_e.fch'   # excited state
+anion_fch           'test_a.fch'   # anion state
+cation_fch          'test_c.fch'   # cation state
+lower_bound         1000.d0        # lower bound in (cm-1) for the effective coupling parameters
+upper_bound         1800.d0        # upper bound in (cm-1) for the effective coupling parameters
+# the following options are only necessary when
+# requesting that the G09 input files be made
+method              'B3LYP/cc-pVTZ'                       # input method/basis
+emethod             'TD=(nstates=1,root=1) B3LYP/cc-pVTZ' # excited state method/basis
+task                test                                  # name for g09 tasks
+xyz_file            ethylene.xyz                          # name of xyz file to be read using -m option
