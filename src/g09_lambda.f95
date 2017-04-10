@@ -15,14 +15,16 @@ program g09_lambda
     real(8), allocatable :: freq(:), normalModes(:,:),      &
                             lambda_ge(:), lambda_ga(:),     &
                             lambda_gc(:)
+    real(8) :: lbnd, ubnd, hreff, freqeff
     integer i
     integer, parameter :: fno = 607
 
 
     ! initialize the program, read options and input file
-    call lambda_init(fch_g, fch_e, fch_a, fch_c, fout)
+    call lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd, ubnd)
     
     ! read in the data from the Guassian files
+    print*, '>> Getting info about the ground (reference) state.'
     call g09_calcInfo(fch_g) ! returns several variables from g09_commonvar
     call g09_hessian(fch_g)  ! returns the hessian from the ground state
     allocate( g09_atom_g(g09_task_numAtoms),            &
@@ -48,6 +50,7 @@ program g09_lambda
 
     ! ground to excited
     if ( fch_e .ne. '' ) then
+        print*, '>> Getting info about the excited (deformed) state.'
         ! get info about the excited state calculation
         call g09_calcInfo(fch_e)
         g09_atom_e = g09_atom
@@ -59,6 +62,7 @@ program g09_lambda
 
     ! ground to anion
     if ( fch_a .ne. '' ) then
+        print*, '>> Getting info about the anion (deformed) state.'
         ! get info about the anion calculation
         call g09_calcInfo(fch_a)
         g09_atom_a = g09_atom
@@ -70,6 +74,7 @@ program g09_lambda
 
     ! ground to cation
     if ( fch_c .ne. '' ) then
+        print*, '>> Getting info about the cation (deformed) state.'
         ! get info about the cation calculation
         call g09_calcInfo(fch_c)
         g09_atom_c = g09_atom
@@ -81,11 +86,16 @@ program g09_lambda
 
     ! write output to file
     if ( .not. fout == '' ) then
+        ! convert frequencies to cm-1
+        freq = freq * Hartree_to_cm
         open ( unit = fno, file = fout, status = 'new', action = 'write' )
-        write( fno, * ) g09_task_title
+        write( fno, * ) fout
         write( fno, * ) g09_task_method
         write( fno, * ) g09_task_basis
         if ( fch_e .ne. '' ) then
+            write( fno, * )
+            write( fno, '(a60)' ) '**************************************************'//&
+                                   '**********'
             write( fno, '(3a20)' ) 'Mode', 'Frequency (cm-1)', 'lambda'
             write( fno, '(a60)' ) '**************************************************'//&
                                    '**********'
@@ -94,8 +104,22 @@ program g09_lambda
             end do
             write( fno, '(a60)' ) '**************************************************'//&
                                    '**********'
+            write( fno, '(a,2f10.1)' ) 'Effective HR range (cm-1):', lbnd, ubnd
+            hreff = 0.d0
+            freqeff = 0.d0
+            do i = 1, g09_task_dof
+                if ( freq(i) > lbnd .and. freq(i) < ubnd ) then
+                    hreff = hreff + lambda_ge(i)**2
+                    freqeff = freqeff + freq(i)*lambda_ge(i)**2
+                end if
+            end do
+            write( fno, '(a,f10.5)' ) 'Effective HR Factor: ', hreff
+            write( fno, '(a,f10.5)' ) 'Effective HR Frequency: ', freqeff/hreff
         end if
         if ( fch_a .ne. '' ) then
+            write( fno, * )
+            write( fno, '(a60)' ) '**************************************************'//&
+                                   '**********'
             write( fno, '(3a20)' ) 'Mode', 'Frequency (cm-1)', 'lambda-'
             write( fno, '(a60)' ) '**************************************************'//&
                                    '**********'
@@ -104,8 +128,22 @@ program g09_lambda
             end do
             write( fno, '(a60)' ) '**************************************************'//&
                                   '**********'
+            write( fno, '(a,2f10.1)' ) 'Effective HR- range (cm-1):', lbnd, ubnd
+            hreff = 0.d0
+            freqeff = 0.d0
+            do i = 1, g09_task_dof
+                if ( freq(i) > lbnd .and. freq(i) < ubnd ) then
+                    hreff = hreff + lambda_ga(i)**2
+                    freqeff = freqeff + freq(i)*lambda_ga(i)**2
+                end if
+            end do
+            write( fno, '(a,f10.5)' ) 'Effective HR- Factor: ', hreff
+            write( fno, '(a,f10.5)' ) 'Effective HR- Frequency:', freqeff
         end if
         if ( fch_c .ne. '' ) then
+            write( fno, * )
+            write( fno, '(a60)' ) '**************************************************'//&
+                                   '**********'
             write( fno, '(3a20)' ) 'Mode', 'Frequency (cm-1)', 'lambda+'
             write( fno, '(a60)' ) '**************************************************'//&
                                    '**********'
@@ -114,8 +152,22 @@ program g09_lambda
             end do
             write( fno, '(a60)' ) '**************************************************'//&
                                   '**********'
+            write( fno, '(a,2f10.1)' ) 'Effective HR+ range (cm-1):', lbnd, ubnd
+            hreff = 0.d0
+            freqeff = 0.d0
+            do i = 1, g09_task_dof
+                if ( freq(i) > lbnd .and. freq(i) < ubnd ) then
+                    hreff = hreff + lambda_gc(i)**2
+                    freqeff = freqeff + freq(i)*lambda_gc(i)**2
+                end if
+            end do
+            write( fno, '(a,f10.5)' ) 'Effective HR+ Factor: ', hreff
+            write( fno, '(a,f10.5)' ) 'Effective HR+ Frequency: ', freqeff
         end if
- 
+        close( fno ) 
+        print*, 
+        print*, '>> Wrote output to file: ', trim(adjustl(fout))
+        print*,
     end if
 
     
@@ -272,10 +324,6 @@ subroutine calc_VibronicCoupling( g09_atom_ref, g09_atom_displaced, &
     ! lambda is dimensionless
     lambda = dsqrt(dabs(freq)/2.d0)*Ro 
 
-    print'(3a20)', 'Freq (cm-1), lambda, S'
-    do nx = 1, g09_task_dof
-        print'(3f20.4)', freq(nx)*Hartree_to_cm, lambda(nx), lambda(nx)**2
-    end do
 end subroutine
 
 
@@ -283,11 +331,12 @@ end subroutine
 !**********************************************************************!
 !   Initialize the program. Read command line options and input file   ! 
 !**********************************************************************!
-subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout)
+subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
     implicit none
 
     character(200), intent(out) :: fch_g, fch_e, &
                                    fch_a, fch_c, fout
+    real(8), intent(out) :: lbnd, ubnd
     integer nargs, narg, ios, line, pos
     integer, parameter :: fno = 67, fno2 = 68
     character(32) arg, fin, label, fxyz, task
@@ -404,6 +453,12 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout)
                     case('xyz_file')
                         read( buff, *, iostat = ios ) fxyz
                         print*, 'fxyz: ', trim(adjustl(fxyz))
+                    case('lower_bound')
+                        read( buff, *, iostat = ios ) lbnd
+                        print*, 'lbnd: ', lbnd
+                    case('upper_bound')
+                        read( buff, *, iostat = ios ) ubnd
+                        print*, 'ubnd: ', ubnd
                     case default
                         print*, 'Label ', trim(adjustl(label)), &
                                 ' unknown'
@@ -431,7 +486,7 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout)
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_g.chk'
         write( fno, * ) '%NProcShared=4'
         write( fno, * ) '# opt=tight freq=(savenormalmodes,hpmodes) '//&
-                         trim(method)//' Symmetry=Loose int=ultrafine'
+                         trim(method)//' Symmetry=Loose int=ultrafine MaxDisk=2GB'
         write( fno, * )
         write( fno, * ) trim(adjustl(task))//'_g'
         write( fno, * )
@@ -450,7 +505,7 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout)
         open( unit = fno, file = trim(adjustl(task))//'_e.gjf', action = 'write' )
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_e.chk'
         write( fno, * ) '%NProcShared=4'
-        write( fno, * ) '# opt=tight '//trim(emethod)//' Symmetry=Loose int=ultrafine'
+        write( fno, * ) '# opt=tight '//trim(emethod)//' Symmetry=Loose int=ultrafine MaxDisk=2GB'
         write( fno, * )
         write( fno, * ) trim(adjustl(task))//'_e'
         write( fno, * )
@@ -469,7 +524,7 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout)
         open( unit = fno, file = trim(adjustl(task))//'_a.gjf', action = 'write' )
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_a.chk'
         write( fno, * ) '%NProcShared=4'
-        write( fno, * ) '# opt=tight '//trim(method)//' Symmetry=Loose int=ultrafine'
+        write( fno, * ) '# opt=tight '//trim(method)//' Symmetry=Loose int=ultrafine MaxDisk=2GB'
         write( fno, * )
         write( fno, * ) trim(adjustl(task))//'_a'
         write( fno, * )
@@ -488,7 +543,7 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout)
         open( unit = fno, file = trim(adjustl(task))//'_c.gjf', action = 'write' )
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_c.chk'
         write( fno, * ) '%NProcShared=4'
-        write( fno, * ) '# opt=tight '//trim(method)//' Symmetry=Loose int=ultrafine'
+        write( fno, * ) '# opt=tight '//trim(method)//' Symmetry=Loose int=ultrafine MaxDisk=2GB'
         write( fno, * )
         write( fno, * ) trim(adjustl(task))//'_c'
         write( fno, * )
