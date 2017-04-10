@@ -138,7 +138,7 @@ subroutine g09_calcInfo( fch )
     print'(a,i12)',     '    Atoms:            ', g09_task_numAtoms
     print'(a,i12)',     '    Electrons:        ', g09_task_numElectrons
     print'(a,i12)',     '    Basis Functions:  ', g09_task_numBasisFunctions
-    print'(a,E22.15)',  '    Energy (hartree): ', g09_task_totalEnergy
+    print'(a,E12.6)',   '    Energy (hartree): ', g09_task_totalEnergy
 
     ! return cleanly
     return
