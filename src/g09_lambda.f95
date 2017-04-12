@@ -94,17 +94,18 @@ program g09_lambda
         write( fno, * ) g09_task_basis
         if ( fch_e .ne. '' ) then
             write( fno, * )
-            write( fno, '(a60)' ) '**************************************************'//&
-                                   '**********'
+            write( fno, '(a60)' ) '***********************************'//&
+                                  '*************************'
             write( fno, '(3a20)' ) 'Mode', 'Frequency (cm-1)', 'lambda'
-            write( fno, '(a60)' ) '**************************************************'//&
-                                   '**********'
+            write( fno, '(a60)' ) '***********************************'//&
+                                  '*************************'
             do i = 1, g09_task_dof
                 write( fno, '(i20, 2f20.10)' ) i, freq(i), lambda_ge(i)
             end do
-            write( fno, '(a60)' ) '**************************************************'//&
-                                   '**********'
-            write( fno, '(a,2f10.1)' ) 'Effective HR range (cm-1):', lbnd, ubnd
+            write( fno, '(a60)' ) '***********************************'//&
+                                  '*************************'
+            write( fno, '(a,2f10.1)' ) 'Effective HR range (cm-1):', &
+                                        lbnd, ubnd
             hreff = 0.d0
             freqeff = 0.d0
             do i = 1, g09_task_dof
@@ -114,21 +115,23 @@ program g09_lambda
                 end if
             end do
             write( fno, '(a,f10.5)' ) 'Effective HR Factor: ', hreff
-            write( fno, '(a,f10.5)' ) 'Effective HR Frequency: ', freqeff/hreff
+            write( fno, '(a,f10.5)' ) 'Effective HR Frequency: ', &
+                                       freqeff/hreff
         end if
         if ( fch_a .ne. '' ) then
             write( fno, * )
-            write( fno, '(a60)' ) '**************************************************'//&
-                                   '**********'
+            write( fno, '(a60)' ) '***********************************'//&
+                                  '*************************'
             write( fno, '(3a20)' ) 'Mode', 'Frequency (cm-1)', 'lambda-'
-            write( fno, '(a60)' ) '**************************************************'//&
-                                   '**********'
+            write( fno, '(a60)' ) '***********************************'//&
+                                  '*************************'
             do i = 1, g09_task_dof
                 write( fno, '(i20, 2f20.10)' ) i, freq(i), lambda_ga(i)
             end do
-            write( fno, '(a60)' ) '**************************************************'//&
-                                  '**********'
-            write( fno, '(a,2f10.1)' ) 'Effective HR- range (cm-1):', lbnd, ubnd
+            write( fno, '(a60)' ) '***********************************'//&
+                                  '*************************'
+            write( fno, '(a,2f10.1)' ) 'Effective HR- range (cm-1):', &
+                                        lbnd, ubnd
             hreff = 0.d0
             freqeff = 0.d0
             do i = 1, g09_task_dof
@@ -142,17 +145,18 @@ program g09_lambda
         end if
         if ( fch_c .ne. '' ) then
             write( fno, * )
-            write( fno, '(a60)' ) '**************************************************'//&
-                                   '**********'
+            write( fno, '(a60)' ) '***********************************'//&
+                                  '*************************'
             write( fno, '(3a20)' ) 'Mode', 'Frequency (cm-1)', 'lambda+'
-            write( fno, '(a60)' ) '**************************************************'//&
-                                   '**********'
+            write( fno, '(a60)' ) '***********************************'//&
+                                  '*************************'
             do i = 1, g09_task_dof
                 write( fno, '(i20, 2f20.10)' ) i, freq(i), lambda_gc(i)
             end do
-            write( fno, '(a60)' ) '**************************************************'//&
-                                  '**********'
-            write( fno, '(a,2f10.1)' ) 'Effective HR+ range (cm-1):', lbnd, ubnd
+            write( fno, '(a60)' ) '***********************************'//&
+                                  '*************************'
+            write( fno, '(a,2f10.1)' ) 'Effective HR+ range (cm-1):', &
+                                        lbnd, ubnd
             hreff = 0.d0
             freqeff = 0.d0
             do i = 1, g09_task_dof
@@ -204,7 +208,8 @@ subroutine calc_vib_freq(g09_atom_g, normalModes, freq)
     end do
     end do
 
-    ! diagonalize the mass weighted hessian to find the vibrational normal modes
+    ! diagonalize the mass weighted hessian to find the vibrational 
+    ! normal modes
     call diagonalize( hessian_mwc, g09_task_dof, freq )
 
     ! save the normal modes to send back
