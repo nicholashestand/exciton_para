@@ -114,8 +114,8 @@ program g09_lambda
                     freqeff = freqeff + freq(i)*lambda_ge(i)**2
                 end if
             end do
-            write( fno, '(a,f10.5)' ) 'Effective HR Factor: ', hreff
-            write( fno, '(a,f10.5)' ) 'Effective HR Frequency: ', &
+            write( fno, '(a,f10.2)' ) 'Effective HR Factor: ', hreff
+            write( fno, '(a,f10.2)' ) 'Effective HR Frequency: ', &
                                        freqeff/hreff
         end if
         if ( fch_a .ne. '' ) then
@@ -140,8 +140,9 @@ program g09_lambda
                     freqeff = freqeff + freq(i)*lambda_ga(i)**2
                 end if
             end do
-            write( fno, '(a,f10.5)' ) 'Effective HR- Factor: ', hreff
-            write( fno, '(a,f10.5)' ) 'Effective HR- Frequency:', freqeff
+            write( fno, '(a,f10.2)' ) 'Effective HR- Factor: ', hreff
+            write( fno, '(a,f10.2)' ) 'Effective HR- Frequency:', &
+                                       freqeff/hreff
         end if
         if ( fch_c .ne. '' ) then
             write( fno, * )
@@ -165,8 +166,9 @@ program g09_lambda
                     freqeff = freqeff + freq(i)*lambda_gc(i)**2
                 end if
             end do
-            write( fno, '(a,f10.5)' ) 'Effective HR+ Factor: ', hreff
-            write( fno, '(a,f10.5)' ) 'Effective HR+ Frequency: ', freqeff
+            write( fno, '(a,f10.2)' ) 'Effective HR+ Factor: ', hreff
+            write( fno, '(a,f10.2)' ) 'Effective HR+ Frequency: ', &
+                                      freqeff/hreff
         end if
         close( fno ) 
         print*, 
