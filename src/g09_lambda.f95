@@ -352,6 +352,8 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
     character(64) method, emethod
 
     makeinput = .false.
+    fin = ''
+    fout = ''
 
     ! check if any command line arguments are found
     nargs = command_argument_count()
@@ -477,23 +479,27 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
     end if
 
     if ( makeinput ) then
-        ! set default method and basis if they are not set in the input file
+        ! set default method and basis if they are not set 
+        ! in the input file
         if ( method == '' ) method = 'HF/6-31G'
         if ( emethod == '' ) emethod = 'CIS(nstates=1,root=1)/6-31G'
         
         ! make sure the xyz file exists
         inquire( file = trim(fxyz), exist = exists )
         if ( .not. exists ) then
-            print*, 'The file ', trim(adjustl(fxyz)), ' does not exist. Aborting...'
+            print*, 'The file ', trim(adjustl(fxyz)),&
+                    ' does not exist. Aborting...'
             stop
         end if
  
         ! the ground state calculation
-        open( unit = fno, file = trim(adjustl(task))//'_g.gjf', action = 'write' )
+        open( unit = fno, file = trim(adjustl(task))//'_g.gjf', &
+                          action = 'write' )
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_g.chk'
         write( fno, * ) '%NProcShared=4'
         write( fno, * ) '# opt=tight freq=(savenormalmodes,hpmodes) '//&
-                         trim(method)//' Symmetry=Loose int=ultrafine MaxDisk=2GB'
+                         trim(method)//&
+                         ' Symmetry=Loose int=ultrafine MaxDisk=2GB'
         write( fno, * )
         write( fno, * ) trim(adjustl(task))//'_g'
         write( fno, * )
@@ -509,10 +515,12 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
         close( fno )
 
         ! the excited state calculation
-        open( unit = fno, file = trim(adjustl(task))//'_e.gjf', action = 'write' )
+        open( unit = fno, file = trim(adjustl(task))//'_e.gjf', &
+                          action = 'write' )
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_e.chk'
         write( fno, * ) '%NProcShared=4'
-        write( fno, * ) '# opt=tight '//trim(emethod)//' Symmetry=Loose int=ultrafine MaxDisk=2GB'
+        write( fno, * ) '# opt=tight '//trim(emethod)//&
+                        ' Symmetry=Loose int=ultrafine MaxDisk=2GB'
         write( fno, * )
         write( fno, * ) trim(adjustl(task))//'_e'
         write( fno, * )
@@ -528,10 +536,12 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
         close( fno )
         
         ! the anion state calculation
-        open( unit = fno, file = trim(adjustl(task))//'_a.gjf', action = 'write' )
+        open( unit = fno, file = trim(adjustl(task))//'_a.gjf',&
+                          action = 'write' )
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_a.chk'
         write( fno, * ) '%NProcShared=4'
-        write( fno, * ) '# opt=tight '//trim(method)//' Symmetry=Loose int=ultrafine MaxDisk=2GB'
+        write( fno, * ) '# opt=tight '//trim(method)//&
+                        ' Symmetry=Loose int=ultrafine MaxDisk=2GB'
         write( fno, * )
         write( fno, * ) trim(adjustl(task))//'_a'
         write( fno, * )
@@ -547,10 +557,12 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
         close( fno )
 
         ! the cation state calculation
-        open( unit = fno, file = trim(adjustl(task))//'_c.gjf', action = 'write' )
+        open( unit = fno, file = trim(adjustl(task))//'_c.gjf', &
+                          action = 'write' )
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_c.chk'
         write( fno, * ) '%NProcShared=4'
-        write( fno, * ) '# opt=tight '//trim(method)//' Symmetry=Loose int=ultrafine MaxDisk=2GB'
+        write( fno, * ) '# opt=tight '//trim(method)//&
+                        ' Symmetry=Loose int=ultrafine MaxDisk=2GB'
         write( fno, * )
         write( fno, * ) trim(adjustl(task))//'_c'
         write( fno, * )
@@ -582,37 +594,40 @@ subroutine print_help()
     print*, 
     print*, ' g09_lambda version 1.0'
     print*, 
-    print*, ' This program calculates the vibronic coupling parameter for each'
-    print*, ' vibrational mode of a molecule using the formatted checkpoint file'
-    print*, ' from Gaussian09 output.'
+    print*, ' This program calculates the vibronic coupling parameter for '
+    print*, ' each vibrational mode of a molecule using the formatted che-'
+    print*, ' ckpoint file from Gaussian09 output.'
     print*,
     print*, ' Usage:'
     print*,
     print*, ' -- help, -h: print this message'
-    print*, ' -i file    : specifies the input file containing the names of the'
-    print*, '              formatted checkpoing files. If the -m option is also'
-    print*, '              given, it reads the input file for information about'
-    print*, '              g09 calculation to add to the input file'
+    print*, ' -i file    : specifies the input file containing the names '
+    print*, '              of the formatted checkpoing files. If the -m  '
+    print*, '              option is also given, it reads the input file '
+    print*, '              for information about g09 calculation to add  '
+    print*, '              to the input file.'
     print*, ' -o file    : specifies the output file(s)'
-    print*, ' -m         : makes four gaussian input files from an xyz file of'
-    print*, '              atomic coordinates. The four files are for the ground,'
-    print*, '              excited, anion and cation optimizations. The options'
-    print*, '              are set so that the resulting fch files can be used'
-    print*, '              directly with this program. Note that the formatted'
-    print*, '              checkpoint file needs to be made by the gaussian formchk'
-    print*, '              utility.'
+    print*, ' -m         : makes four gaussian input files from an xyz   '
+    print*, '              file of atomic coordinates. The four files are'
+    print*, '              for the ground, excited, anion and cation opti-'
+    print*, '              mizations. The options are set so that the res-'
+    print*, '              ulting fch files can be used directly with '
+    print*, '              this program. Note that the formatted check-'
+    print*, '              point file needs to be made by the gaussian '
+    print*, '              formchk utility.'
     print*, 
-    print*, ' To use this program to calculate the vibronic coupling parameters'
-    print*, ' you must first run a geometry optimization in Gaussian09 of the '
-    print*, ' reference (ground) and displaced (excited) states. The reference state'
-    print*, ' must also include a frequency calculation so that the hessian gets'
-    print*, ' written to the checkpoint file. The -m option of this program can be'
-    print*, ' used to generate the appropriate Gaussian09 input files if a xyz '
+    print*, ' To use this program to calculate the vibronic coupling para-'
+    print*, ' meters you must first run a geometry optimization in Gauss- '
+    print*, ' ian09 of the reference (ground) and displaced (excited) '
+    print*, ' states. The reference state must also include a frequency'
+    print*, ' calculation so that the Hessian gets written to the check-'
+    print*, ' point file. The -m option of this program can be used to '
+    print*, ' generate the appropriate Gaussian09 input files if a xyz '
     print*, ' coordinate file for the molecule of interest is provided.'
     print*, 
-    print*, ' The resulting checkpoing files must be converted to formatted checkpoint'
-    print*, ' files using the Gaussian09 formcheck utility before they can be read'
-    print*, ' by this program.'
+    print*, ' The resulting checkpoing files must be converted to format-'
+    print*, ' ted checkpoint files using the Gaussian09 formcheck utility'
+    print*, ' before they can be read by this program.'
     print*,
 
 end subroutine
