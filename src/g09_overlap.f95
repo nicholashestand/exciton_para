@@ -23,6 +23,7 @@ subroutine g09_overlap( logf )
           action = 'read' )
 
     ! allocate space for the overlap matrix
+    if ( allocated ( overlap ) ) deallocate( overlap )
     allocate( overlap( g09_task_numBasisFunctions,          &
                        g09_task_numBasisFunctions ) )
 
@@ -41,7 +42,7 @@ subroutine g09_overlap( logf )
                 do
                     read ( fno, '(i8, 5D14.6)', end=103 ), row,   &
                         (overlap( row, col(i) ), i = 1,           &
-                             maxval( col(:) - col(1) ) )
+                             maxval( col(:) - col(1) ) + 1 )
                     103 continue
                     if ( row == g09_task_numBasisFunctions ) exit
                 end do
