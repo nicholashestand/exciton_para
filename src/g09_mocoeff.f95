@@ -26,6 +26,7 @@ subroutine g09_mocoeff( fch )
           action = 'read' )
 
     ! allocate space for the molecular orbital energies
+    if ( allocated( moe ) ) deallocate(moe)
     allocate( moe( g09_task_numBasisFunctions ) )
     do
         read( fno, '(a)', end = 1001 ), read_line
@@ -36,7 +37,8 @@ subroutine g09_mocoeff( fch )
     end do
 
     ! allocate space for the molecular orbital coefficients
-    allocate( moc( g09_task_numBasisFunctions, g09_task_numBasisFunctions ) )
+    if ( allocated( moc ) ) deallocate( moc )
+    allocate( moc( g09_task_numBasisFunctions,g09_task_numBasisFunctions ) )
 
     ! read the hessian matrix in upper triangular form
     do
