@@ -7,14 +7,21 @@ DEP=g09_commonvar.mod
 HRSRCFILE=g09_lambda.f95
 HROBJFILE=g09_lambda.o
 HREXE=g09_lambda.exe
+CTSRCFILE=g09_ctint.f95
+CTOBJFILE=g09_ctint.o
+CTEXE=g09_ctint.exe
 vpath %.o ${OBJDIR}
 vpath %.mod ${OBJDIR}
 vpath %.f95 ${SRCDIR}
 FLINKER = gfortran
 LIBLINKER = -lblas -llapack
 
+all : ${CTEXE} ${HREXE}
+
+${CTEXE} : ${CTOBJFILE} ${g09OBJFILES}
+	${FLINKER} $(addprefix ${OBJDIR}/,$(^F)) ${OBJDIR}/${DEP:.mod=.o} -o $@ -I${OBJDIR} ${LIBLINKER}
+
 ${HREXE} : ${HROBJFILE} ${g09OBJFILES}
-	echo ${g09OBJFILES}
 	${FLINKER} $(addprefix ${OBJDIR}/,$(^F)) ${OBJDIR}/${DEP:.mod=.o} -o $@ -I${OBJDIR} ${LIBLINKER}
 
 %.o : %.f95 ${DEP}

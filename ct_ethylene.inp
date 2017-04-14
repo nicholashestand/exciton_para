@@ -1,0 +1,12 @@
+# Example input file
+method          'B3LYP/6-31++G**'      # method for Gaussian calcultions
+task            ethyleneEx     # Name of the Gaussian files to create
+xyz_file_m1     ethylene_m1.xyz # file with xyz of molecule 1
+xyz_file_m2     ethylene_m2.xyz # file with xyz of molecule 2
+# log file and fch file names
+fch_m1          ethyleneEx_m1.fch
+log_m1          ethyleneEx_m1.out
+fch_m2          ethyleneEx_m2.fch
+log_m2          ethyleneEx_m2.out
+fch_d           ethyleneEx_d.fch
+log_d           ethyleneEx_d.out
