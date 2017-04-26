@@ -87,7 +87,7 @@ program g09_ctint
 
     ! write out the orthogonalized and nonorthogonalized Hamiltonian
     open( unit = fno, file = trim(fout), status='new', action='write')
-    write( fno, * ) 'Unorthogonalized Sub Hamiltonian (cm-1)'
+    write( fno, * ) 'Nonorthogonal Sub Hamiltonian (cm-1)'
     write( fno, * ) ',|HOMO1>,|HOMO2>,|LUMO1>,|LUMO2>'
     write( fno, '(a,4(",",f14.4))' ) '<HOMO1|',(Hsub(1,i),i=1,4)
     write( fno, '(a,4(",",f14.4))' ) '<HOMO2|',(Hsub(2,i),i=1,4)
