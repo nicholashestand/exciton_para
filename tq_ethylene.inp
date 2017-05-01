@@ -1,0 +1,17 @@
+# Sample input file for the g09_lambda program
+# It requires the names of the four formatted
+# checkpoint files from the Gaussian Calculations
+#
+fch          'tq_ethylene.fch'   # formatted checkpoint file
+log          'tq_ethylene.out'   # output file
+#
+# The excited state of interest
+estate       1
+# the following options are only necessary when
+# requesting that the G09 input files be made
+# QC method (neutral excited)
+emethod             'CIS=(nstates=1,root=1)/cc-pVTZ'
+# name of g09 input files created
+task                tq_ethylene
+# name of xyz file containing coordinates to be optimized
+xyz_file            ethylene.xyz
