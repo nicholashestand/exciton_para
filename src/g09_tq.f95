@@ -72,6 +72,11 @@ program g09_tq
     end do
     end do
 
+    ! normalize the transition charges to account for the molecular
+    ! orbitals being doubly occupied, the other factor of root 2 comes
+    ! when the CI coefficients are normalized to 1
+    tq = tq * dsqrt(2.d0)
+
     ! calcualte the tansition dipole moment and sum of transition charges
     tq_mu = 0.d0
     tq_sum = 0.d0
@@ -102,6 +107,18 @@ program g09_tq
 end program
 
 
+!**********************************************************************!
+!   Calculate the coupling from two tq files                           ! 
+!**********************************************************************!
+subroutine calc_cpl_from_tq( tqf1, tqf2 )
+    use g09_commonvar
+    implicit none
+    
+    character(100), intent(in) :: tqf1, tqf2
+
+    
+end subroutine
+
 
 !**********************************************************************!
 !   Initialize the program. Read command line options and input file   ! 
@@ -114,7 +131,7 @@ subroutine tq_init(fch, logf, fout, estate )
     integer nargs, narg, ios, line, pos
     integer, parameter :: fno = 67, fno2 = 68
     character(32) arg, fin, label, fxyz, task
-    character(100) buff, emethod
+    character(100) buff, emethod, tqf1, tqf2
     logical exists, makeinput
 
     makeinput = .false.
@@ -165,6 +182,28 @@ subroutine tq_init(fch, logf, fout, estate )
                     fout = adjustl(fout)
                 case('-m')
                     makeinput = .true. 
+                case('-c')
+                    narg = narg + 1
+                    if ( narg > nargs ) then
+                        print*, 'No tq file given with option -c'
+                        call print_help()
+                        stop
+                    end if
+                    ! get the name of the tq file
+                    call get_command_argument(narg, tqf1)
+                    tqf1 = adjustl(tqf1)
+                    ! get the name of the second tq file
+                    narg = narg + 1
+                    if ( narg > nargs ) then
+                        print*, 'No second tq file given with option -c'
+                        call print_help()
+                        stop
+                    end if
+                    ! get the name of the tq file
+                    call get_command_argument(narg, tqf2)
+                    tqf1 = adjustl(tqf2)
+                    call calc_cpl_from_tq( tqf1, tqf2)
+                    stop
                 case default
                     print'(3a)', ' Option ', adjustl(arg), ' unknown'
                     call print_help()
