@@ -149,9 +149,9 @@ subroutine calc_cpl_from_tq( tqf1, tqf2 )
     do p1 = 1, numAtoms1
     do p2 = 1, numAtoms2
         cpl = cpl + tq1(p1)*tq2(p2)/ &
-            ( dabs( g09_atom1(p1)%x - g09_atom2(p2)%x ) + &
-              dabs( g09_atom1(p1)%y - g09_atom2(p2)%y ) + &
-              dabs( g09_atom1(p1)%z - g09_atom2(p2)%z ) )
+              dsqrt( ( g09_atom1(p1)%x - g09_atom2(p2)%x )**2 + &
+                     ( g09_atom1(p1)%y - g09_atom2(p2)%y )**2 + &
+                     ( g09_atom1(p1)%z - g09_atom2(p2)%z )**2 )
     end do
     end do
    
@@ -194,7 +194,7 @@ subroutine calc_cpl_from_tq( tqf1, tqf2 )
     rmag = dsqrt(sum(r**2))
     r = r/rmag
     
-    ! the coupling
+    ! the transition dipole coupling
     cpl = ( mu1(1)*mu2(1) + mu1(2)*mu2(2) + mu1(3)*mu2(3) - &
           3.d0 * ( mu1(1) * r(1) + mu1(2) * r(2) + mu1(3) * r(3) ) * &
                  ( mu2(1) * r(1) + mu2(2) * r(2) + mu2(3) * r(3) ) ) / &
