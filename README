@@ -11,3 +11,6 @@ should also have access to that program for this repository  to be
 useful to you. These programs can also make input files for 
 Gaussian09, please see the CalculationDetails.pptx power point 
 presentation for details.
+
+This repository also contains the input files used in the examples
+in the CalculationDetails.pptx power point presentation.
