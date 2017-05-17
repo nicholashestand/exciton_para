@@ -1,0 +1,13 @@
+This repository contains some utility programs that can be used to 
+parameterize the Holstein Hamiltonian. For details, please see the
+CalculationDetails.pptx power point presentation. 
+
+The programs can be compiled using make and the supplied makefile.
+Some of these programs rely on the lapack math library, which will
+need to be installed on the machine you plan to use.
+
+The programs analyzes calculations performed by Gaussian09, so you 
+should also have access to that program for these programs to be 
+useful to you. These programs can also make input files for 
+Gaussian09, please see the CalculationDetails.pptx power point 
+presentation.
