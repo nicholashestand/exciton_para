@@ -88,6 +88,7 @@ program g09_tq
     end do
 
     open( unit = fno, file = trim(fout), status = 'new', action = 'write')
+    write( fno, '(a10, i4)' ) 'NumAtoms ', g09_task_numAtoms
     write( fno, * ) 'Atomic Number, X (bohr), Y(bohr), Z(bohr), TQ (au)'
     do p = 1, g09_task_numAtoms 
         write( fno, '(i4,",",4(f14.7,","))' ) g09_atom(p)%atomicNum, &
@@ -115,8 +116,93 @@ subroutine calc_cpl_from_tq( tqf1, tqf2 )
     implicit none
     
     character(100), intent(in) :: tqf1, tqf2
+    integer :: fno = 101
+    type( g09_atom_type ), allocatable :: g09_atom1(:), g09_atom2(:)
+    integer p1, p2, numAtoms1, numAtoms2
+    real(8), allocatable :: tq1(:), tq2(:)
+    real(8) cpl, mu1(3), mu2(3), com1(3), com2(3), r(3), rmag
 
+    ! read the first tq file
+    open( unit = fno, file = trim(tqf1), status = 'old', action = 'read' )
+    read( fno, '(10X, i4)' ) numAtoms1
+    allocate( g09_atom1( numAtoms1 ), tq1( numAtoms1 ) )
+    read( fno, '(X)' )
+    do p1 = 1, numAtoms1
+        read( fno, '(5X, 4(f14.7, X))' ), g09_atom1(p1)%x, &
+            g09_atom1(p1)%y, g09_atom1(p1)%z, tq1(p1)
+    end do
+    close( fno )
+
+    ! read the second tq file
+    open( unit = fno, file = trim(tqf2), status = 'old', action = 'read' )
+    read( fno, '(10X, i4)' ) numAtoms2
+    allocate( g09_atom2( numAtoms2 ), tq2( numAtoms2 ) )
+    read( fno, '(X)' )
+    do p2 = 1, numAtoms2
+        read( fno, '(5X, 4(f14.7, X))' ), g09_atom2(p2)%x, &
+            g09_atom2(p2)%y, g09_atom2(p2)%z, tq2(p2)
+    end do
+    close( fno )
+
+    ! calculate the coupling (in Hartree)
+    cpl = 0.d0
+    do p1 = 1, numAtoms1
+    do p2 = 1, numAtoms2
+        cpl = cpl + tq1(p1)*tq2(p2)/ &
+            ( dabs( g09_atom1(p1)%x - g09_atom2(p2)%x ) + &
+              dabs( g09_atom1(p1)%y - g09_atom2(p2)%y ) + &
+              dabs( g09_atom1(p1)%z - g09_atom2(p2)%z ) )
+    end do
+    end do
+   
+    ! convert to wavenumber and print out
+    cpl = cpl * hartree_to_cm
+    print'(a,f14.2)', ' Transition charge coupling (cm-1): ', cpl
+
+    ! also calculate according to the point dipole approximation
+    ! for comparison
+
+    ! first calculate the transition dipole moments and center of mass
+    ! really this isnt the center of mass since the coordinates arent
+    ! weighted by mass, but...
+    mu1 = 0.d0
+    com1 = 0.d0
+    do p1 = 1, numAtoms1
+        mu1(1) = mu1(1) + g09_atom1(p1)%x*tq1(p1)
+        mu1(2) = mu1(2) + g09_atom1(p1)%y*tq1(p1)
+        mu1(3) = mu1(3) + g09_atom1(p1)%z*tq1(p1)
+        com1(1) = com1(1) + g09_atom1(p1)%x
+        com1(2) = com1(2) + g09_atom1(p1)%y
+        com1(3) = com1(3) + g09_atom1(p1)%z
+    end do
+    com1 = com1 / (1.d0 * numAtoms1 )
+
+    mu2 = 0.d0
+    com2 = 0.d0
+    do p2 = 1, numAtoms2
+        mu2(1) = mu2(1) + g09_atom2(p2)%x*tq2(p2)
+        mu2(2) = mu2(2) + g09_atom2(p2)%y*tq2(p2)
+        mu2(3) = mu2(3) + g09_atom2(p2)%z*tq2(p2)
+        com2(1) = com2(1) + g09_atom2(p2)%x
+        com2(2) = com2(2) + g09_atom2(p2)%y
+        com2(3) = com2(3) + g09_atom2(p2)%z
+    end do
+    com2 = com2 / (1.d0 * numAtoms2 )
+     
+    ! the displacement unit vector and the magnitude
+    r = com2 - com1
+    rmag = dsqrt(sum(r**2))
+    r = r/rmag
     
+    ! the coupling
+    cpl = ( mu1(1)*mu2(1) + mu1(2)*mu2(2) + mu1(3)*mu2(3) - &
+          3.d0 * ( mu1(1) * r(1) + mu1(2) * r(2) + mu1(3) * r(3) ) * &
+                 ( mu2(1) * r(1) + mu2(2) * r(2) + mu2(3) * r(3) ) ) / &
+                 rmag**3
+    cpl = cpl * hartree_to_cm
+    print'(a,f14.2)', ' Transition dipole coupling (cm-1): ', cpl
+
+
 end subroutine
 
 
@@ -201,7 +287,7 @@ subroutine tq_init(fch, logf, fout, estate )
                     end if
                     ! get the name of the tq file
                     call get_command_argument(narg, tqf2)
-                    tqf1 = adjustl(tqf2)
+                    tqf2 = adjustl(tqf2)
                     call calc_cpl_from_tq( tqf1, tqf2)
                     stop
                 case default
