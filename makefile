@@ -22,13 +22,16 @@ LIBLINKER = -lblas -llapack
 all : ${CTEXE} ${HREXE} ${TQEXE}
 
 ${TQEXE} : ${TQOBJFILE} ${g09OBJFILES}
-	${FLINKER} $(addprefix ${OBJDIR}/,$(^F)) ${OBJDIR}/${DEP:.mod=.o} -o $@ -I${OBJDIR} ${LIBLINKER}
+	${FLINKER} $(addprefix ${OBJDIR}/,$(^F)) ${OBJDIR}/${DEP:.mod=.o} \
+		-o $@ -I${OBJDIR} ${LIBLINKER}
 
 ${CTEXE} : ${CTOBJFILE} ${g09OBJFILES}
-	${FLINKER} $(addprefix ${OBJDIR}/,$(^F)) ${OBJDIR}/${DEP:.mod=.o} -o $@ -I${OBJDIR} ${LIBLINKER}
+	${FLINKER} $(addprefix ${OBJDIR}/,$(^F)) ${OBJDIR}/${DEP:.mod=.o} \
+		-o $@ -I${OBJDIR} ${LIBLINKER}
 
 ${HREXE} : ${HROBJFILE} ${g09OBJFILES}
-	${FLINKER} $(addprefix ${OBJDIR}/,$(^F)) ${OBJDIR}/${DEP:.mod=.o} -o $@ -I${OBJDIR} ${LIBLINKER}
+	${FLINKER} $(addprefix ${OBJDIR}/,$(^F)) ${OBJDIR}/${DEP:.mod=.o} \
+		-o $@ -I${OBJDIR} ${LIBLINKER}
 
 %.o : %.f95 ${DEP}
 	${FLINKER} -c ${SRCDIR}/$(<F) -o ${OBJDIR}/$(@F) -I${OBJDIR}
