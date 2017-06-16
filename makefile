@@ -37,6 +37,7 @@ ${HREXE} : ${HROBJFILE} ${g09OBJFILES}
 	${FLINKER} -c ${SRCDIR}/$(<F) -o ${OBJDIR}/$(@F) -I${OBJDIR}
 
 ${DEP} : ${DEP:.mod=.f95}
+	mkdir -p ./obj
 	${FLINKER} -c $< -o ${OBJDIR}/${@:.mod=.o} -J${OBJDIR}
 
 clean :
