@@ -253,7 +253,7 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
                                    fch_d, log_d, fout
     integer nargs, narg, ios, line, pos
     integer, parameter :: fno = 67, fno2 = 68
-    character(32) arg, fin, label, fxyzm1, fxyzm2, task, method
+    character(100) arg, fin, label, fxyzm1, fxyzm2, task, method
     character(100) buff
     logical exists, makeinput
 
