@@ -1,0 +1,12 @@
+# An input file for g09_calc_cpl_from_tq. That program allows for the coulomb
+# coupling to be calculated overa range of xyz displacements, as defined here,
+# using previously calculated transition charges.
+# Note, all distances should be in A. They will be converted to bohr internally
+# the grid spacing
+dx          0.10
+# the starting displacement
+startdx     3.5 0. 0.
+# the number of points
+npoints     1 101 101
+# the filename
+tqf         ethylene_tq.dat

@@ -56,5 +56,7 @@ module g09_commonvar
     real(8), parameter :: au_to_mdyneA  = 15.569141d0
     ! au to debye
     real(8), parameter :: au_to_debye = 2.5415803d0
+    ! bohr to angstrom
+    real(8), parameter :: bohr_to_angstrom = 0.529177249
                         
 end module
