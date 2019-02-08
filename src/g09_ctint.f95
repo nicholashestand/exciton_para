@@ -424,6 +424,8 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
             write( fno, * ) buff
         end do
 105     continue
+        ! write a blank line so g09 doesnt crash
+        write( fno, * ) 
         close( fno2 )
         close( fno )
 
@@ -446,6 +448,8 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
             write( fno, * ) buff
         end do
 106     continue
+        ! write a blank line so g09 doesnt crash
+        write( fno, * ) 
         close( fno2 )
         close( fno )
 
@@ -475,6 +479,8 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
             write( fno, * ) buff
         end do
 108     continue
+        ! write a blank line so g09 doesnt crash
+        write( fno, * ) 
         close( fno2 )
         close( fno )
     
