@@ -419,6 +419,8 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         write( fno, * ) '0 1'
         ! write the coordinates from the xyz file
         open( unit = fno2, file = trim(fxyzm1), action = 'read' )
+        read( fno2, * )
+        read( fno2, * )
         do
             read( fno2, '(a)', end=105) buff
             write( fno, * ) buff
@@ -443,6 +445,8 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         write( fno, * ) '0 1'
         ! write the coordinates from the xyz file
         open( unit = fno2, file = trim(fxyzm2), action = 'read' )
+        read( fno2, * )
+        read( fno2, * )
         do
             read( fno2, '(a)', end=106) buff
             write( fno, * ) buff

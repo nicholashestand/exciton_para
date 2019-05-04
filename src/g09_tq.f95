@@ -385,6 +385,8 @@ subroutine tq_init(fch, logf, fout, estate )
         write( fno, * ) '0 1'
         ! write the coordinates from the xyz file
         open( unit = fno2, file = trim(fxyz), action = 'read' )
+        read( fno2, * )
+        read( fno2, * )
         do
             read( fno2, '(a)', end=105) buff
             write( fno, * ) buff

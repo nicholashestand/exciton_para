@@ -346,8 +346,9 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
     real(8), intent(out) :: lbnd, ubnd
     integer nargs, narg, ios, line, pos
     integer, parameter :: fno = 67, fno2 = 68
-    character(32) arg, fin, label, fxyz, task
+    character(32) arg, fin, label, task
     character(100) buff
+    character(200) fxyz
     logical exists, makeinput
     character(64) method, emethod
 
@@ -506,6 +507,8 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
         write( fno, * ) '0 1'
         ! write the coordinates from the xyz file
         open( unit = fno2, file = trim(fxyz), action = 'read' )
+        read( fno2, * )
+        read( fno2, * )
         do
             read( fno2, '(a)', end=105) buff
             write( fno, * ) buff
