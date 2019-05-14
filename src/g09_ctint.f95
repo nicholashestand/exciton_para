@@ -253,6 +253,7 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
                                    fch_d, log_d, fout
     integer nargs, narg, ios, line, pos
     integer, parameter :: fno = 67, fno2 = 68
+    character(2) nproc
     character(100) arg, fin, label, fxyzm1, fxyzm2, task, method
     character(100) buff
     logical exists, makeinput
@@ -262,6 +263,7 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
     fout = ''
     fxyzm1 = ''
     fxyzm2 = ''
+    nproc = '1'
 
     ! check if any command line arguments are found
     nargs = command_argument_count()
@@ -376,6 +378,9 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
                     case('xyz_file_m2')
                         read( buff, *, iostat = ios ) fxyzm2
                         print*, 'fxyzm1: ', trim(adjustl(fxyzm2))
+                    case('nproc')
+                        read( buff, *, iostat = ios ) nproc
+                        print*, 'nproc : ', trim(adjustl(nproc))
                     case default
                         print*, 'Label ', trim(adjustl(label)), &
                                 ' unknown'
@@ -409,7 +414,7 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         open( unit = fno, file = trim(adjustl(task))//'_m1.gjf', &
               action = 'write' )
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_m1.chk'
-        write( fno, * ) '%NProcShared=4'
+        write( fno, * ) '%NProcShared='//trim(adjustl(nproc))
         write( fno, * ) '%mem=1GB'
         write( fno, * ) '# SP '//trim(method)//' IOP(3/33=1) IOP(6/7=3) '//&
                         'Symmetry=None MaxDisk=2GB'
@@ -435,7 +440,7 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         open( unit = fno, file = trim(adjustl(task))//'_m2.gjf', &
               action = 'write' )
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_m2.chk'
-        write( fno, * ) '%NProcShared=4'
+        write( fno, * ) '%NProcShared='//trim(adjustl(nproc))
         write( fno, * ) '%mem=1GB'
         write( fno, * ) '# SP '//trim(method)//' IOP(3/33=1) IOP(6/7=3) '//&
                         'Symmetry=None MaxDisk=2GB'
@@ -461,7 +466,7 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         open( unit = fno, file = trim(adjustl(task))//'_d.gjf', &
               action = 'write' )
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_d.chk'
-        write( fno, * ) '%NProcShared=4'
+        write( fno, * ) '%NProcShared='//trim(adjustl(nproc))
         write( fno, * ) '%mem=1GB'
         write( fno, * ) '# SP '//trim(method)//' IOP(3/33=1) IOP(6/7=3) '//&
                         'Symmetry=None MaxDisk=2GB'
