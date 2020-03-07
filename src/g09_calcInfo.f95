@@ -43,9 +43,14 @@ subroutine g09_calcInfo( fch )
             exit
         end if
     end do
- 
-
-
+    ! read the number of independent basis functions
+    do 
+        read( fno, '(a)', end = 1011 ) read_line
+        if ( index( read_line, 'Number of independent functions' ) .ne. 0 ) then
+            read( read_line, '(49x, i12)' ) g09_task_numBasisFunctionsUsed
+            exit
+        end if
+    end do
 
     ! allocate space for the atom information and read it in
     if ( allocated( g09_atom )) deallocate(g09_atom)
@@ -132,13 +137,14 @@ subroutine g09_calcInfo( fch )
 
     ! print out calculation info
     print'(a)',         ' Gaussian calculation details: '
-    print'(a)',         '    Input File:       '//trim(g09_task_title)
-    print'(a)',         '    Method:           '//trim(g09_task_method)
-    print'(a)',         '    Basis:            '//trim(g09_task_basis)
-    print'(a,i12)',     '    Atoms:            ', g09_task_numAtoms
-    print'(a,i12)',     '    Electrons:        ', g09_task_numElectrons
-    print'(a,i12)',     '    Basis Functions:  ', g09_task_numBasisFunctions
-    print'(a,E12.6)',   '    Energy (hartree): ', g09_task_totalEnergy
+    print'(a)',         '    Input File:            '//trim(g09_task_title)
+    print'(a)',         '    Method:                '//trim(g09_task_method)
+    print'(a)',         '    Basis:                 '//trim(g09_task_basis)
+    print'(a,i12)',     '    Atoms:                 ', g09_task_numAtoms
+    print'(a,i12)',     '    Electrons:             ', g09_task_numElectrons
+    print'(a,i12)',     '    Basis Functions:       ', g09_task_numBasisFunctions
+    print'(a,i12)',     '    Basis Functions Used:  ', g09_task_numBasisFunctionsUsed
+    print'(a,E12.6)',   '    Energy (hartree):      ', g09_task_totalEnergy
 
     ! return cleanly
     return
@@ -168,5 +174,8 @@ subroutine g09_calcInfo( fch )
     1010 continue
     print'(2a)', 'Real atomic weights not found in file ', fch
     stop
-  
+    1011 continue
+    print'(2a)', 'Number of independent basis functions not found in file ', fch
+    stop
+
 end subroutine
