@@ -216,8 +216,8 @@ subroutine tq_init(fch, logf, fout, estate )
     integer, intent(out) :: estate
     integer nargs, narg, ios, line, pos
     integer, parameter :: fno = 67, fno2 = 68
-    character(32) arg, fin, label, fxyz, task
-    character(100) buff, emethod, tqf1, tqf2
+    character(32) arg, fin, label, task
+    character(100) buff, emethod, tqf1, tqf2, fxyz
     logical exists, makeinput
 
     makeinput = .false.

@@ -530,6 +530,8 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
         write( fno, * ) '0 1'
         ! write the coordinates from the xyz file
         open( unit = fno2, file = trim(fxyz), action = 'read' )
+        read( fno2, *)
+        read( fno2, *)
         do
             read( fno2, '(a)', end=106) buff
             write( fno, * ) buff
@@ -551,6 +553,8 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
         write( fno, * ) '-1 2'
         ! write the coordinates from the xyz file
         open( unit = fno2, file = trim(fxyz), action = 'read' )
+        read( fno2, *)
+        read( fno2, *)
         do
             read( fno2, '(a)', end=107) buff
             write( fno, * ) buff
@@ -572,6 +576,8 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
         write( fno, * ) '1 2'
         ! write the coordinates from the xyz file
         open( unit = fno2, file = trim(fxyz), action = 'read' )
+        read( fno2, *)
+        read( fno2, *)
         do
             read( fno2, '(a)', end=108) buff
             write( fno, * ) buff
