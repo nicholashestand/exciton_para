@@ -34,8 +34,8 @@ program g09_ctint
     homo1 = ceiling(g09_task_numElectrons/2.d0)
     lumo1 = homo1 + 1
     call g09_mocoeff(fch_m1)
-    ! allocate space for the matrices (baseN1u rows, baseN1 cols)
-    allocate( m1moc( baseN1u, baseN1 ))
+    ! allocate space for the matrices (baseN1 rows, baseN1u cols)
+    allocate( m1moc( baseN1, baseN1u ))
     m1moc = moc
 
     print*, '>> Getting info about molecule 2.'
@@ -46,8 +46,8 @@ program g09_ctint
     lumo2 = homo2 + 1
     call g09_mocoeff(fch_m2)
     call g09_overlap(log_m2)
-    ! allocate space for the matrices (baseN2u rows, baseN1 cols)
-    allocate( m2moc( baseN2u, baseN2 ))
+    ! allocate space for the matrices (baseN2 rows, baseN1u cols)
+    allocate( m2moc( baseN2, baseN2u ))
     m2moc = moc
 
     print*, '>> Getting info about the dimer.'
@@ -60,7 +60,7 @@ program g09_ctint
     allocate( sd( baseNd, baseNd ) , HAO( baseNd, baseNd ),&
            m12moc( baseN1+baseN2, baseN1u+baseN2u )       ,&
            HMO( baseN1u+baseN2u, baseN1u+baseN2u )        ,&
-           SMO( baseNd, baseNd ) )
+           SMO( baseN1u+baseN2u, baseN1u+baseN2u ) )
     sd = overlap
     HAO = fock*hartree_to_cm
 
@@ -76,7 +76,7 @@ program g09_ctint
 
     ! get submatrices with just the important MOs for us
     call get_submatrix( HMO, SMO, Hsub, Ssub, homo1, homo2, lumo1, lumo2, &
-                        g09_task_numBasisFunctions )
+                        baseN1u+baseN2u)
 
     ! write out the orthogonalized and nonorthogonalized Hamiltonian
     open( unit = fno, file = trim(fout), action='write')

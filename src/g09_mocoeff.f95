@@ -38,7 +38,7 @@ subroutine g09_mocoeff( fch )
 
     ! allocate space for the molecular orbital coefficients
     if ( allocated( moc ) ) deallocate( moc )
-    allocate( moc( g09_task_numBasisFunctionsUsed,g09_task_numBasisFunctions ) )
+    allocate( moc( g09_task_numBasisFunctions,g09_task_numBasisFunctionsUsed ) )
 
     ! read the molecular orbital coefficients
     do
