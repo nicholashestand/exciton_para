@@ -25,6 +25,16 @@ program g09_tq
     call g09_overlap( logf )
     call g09_cicoeff( logf, estate )
 
+    if ( g09_task_numBasisFunctions .ne. g09_task_numBasisFunctionsUsed ) then
+        print*, "*****************************************************************"
+        print*, "WARNING: NumBasisFunctions != NumBasisFunctions Used."
+        print*, "This is probably because you are using a diffuse basis set."
+        print*, "g09_tq cannot yet handle this. Please use a basis set without"
+        print*, "diffuse functions. I hope to update this soon"
+        print*, "*****************************************************************"
+        stop
+    end if
+
     ! map the ao basis functions to the atoms
     allocate( basis_to_atom_map(g09_task_numBasisFunctions) )
     c = 0
