@@ -29,7 +29,7 @@ subroutine g09_calcInfo( fch )
     read( fno, '(49x, i12)') g09_task_numAtoms
     ! read the number of electrons
     do 
-        read( fno, '(a)', end = 1002 ), read_line
+        read( fno, '(a)', end = 1002 ) read_line
         if ( index( read_line, 'Number of electrons' ) .ne. 0 ) then
             read( read_line, '(49x, i12)' ) g09_task_numElectrons
             exit
@@ -37,7 +37,7 @@ subroutine g09_calcInfo( fch )
     end do
     ! read the number of basis functions
     do 
-        read( fno, '(a)', end = 1003 ), read_line
+        read( fno, '(a)', end = 1003 ) read_line
         if ( index( read_line, 'Number of basis functions' ) .ne. 0 ) then
             read( read_line, '(49x, i12)' ) g09_task_numBasisFunctions
             exit
@@ -53,7 +53,7 @@ subroutine g09_calcInfo( fch )
 
     ! read the atomic numbers
     do
-        read( fno, '(a)', end = 1004 ), read_line
+        read( fno, '(a)', end = 1004 ) read_line
         if ( index( read_line , 'Atomic numbers' ) .ne. 0 ) then
             read( fno, '(6i12)' ) g09_atom(:)%atomicNum
             exit
@@ -62,7 +62,7 @@ subroutine g09_calcInfo( fch )
 
     ! read the cartesian coordinates
     do
-        read( fno, '(a)', end = 1005 ), read_line
+        read( fno, '(a)', end = 1005 ) read_line
         if ( index( read_line , 'Current cartesian coordinates' ) .ne. 0 ) then
             read( fno, '(5E16.8)' ) (g09_atom(i)%x, g09_atom(i)%y,          &
                                      g09_atom(i)%z, i=1, g09_task_numAtoms )
@@ -72,7 +72,7 @@ subroutine g09_calcInfo( fch )
 
     ! read the atomic masses
     do
-        read( fno, '(a)', end = 1010 ), read_line
+        read( fno, '(a)', end = 1010 ) read_line
         if ( index( read_line , 'Real atomic weights' ) .ne. 0 ) then
             read( fno, '(5E16.8)' ) g09_atom(:)%mass
             exit
@@ -91,9 +91,9 @@ subroutine g09_calcInfo( fch )
     ! allocate space for and read the atomic orbital basis information
     ! read shell types
     do 
-        read( fno, '(a)', end = 1006 ), read_line
+        read( fno, '(a)', end = 1006 ) read_line
         if ( index( read_line, 'Shell types' ) .ne. 0 ) then
-            read( read_line, '(49x, i12)' ), g09_task_numAOShells
+            read( read_line, '(49x, i12)' ) g09_task_numAOShells
             if ( allocated( g09_AOShell ) ) deallocate( g09_AOShell )
             allocate( g09_AOShell( g09_task_numAOShells ) )
             read( fno, '(6i12)' ) g09_AOShell(:)%typ
@@ -102,7 +102,7 @@ subroutine g09_calcInfo( fch )
     end do
     ! read shell to atom map
     do 
-        read( fno, '(a)', end = 1007 ), read_line
+        read( fno, '(a)', end = 1007 ) read_line
         if ( index( read_line, 'Shell to atom map' ) .ne. 0 ) then
             read( fno, '(6i12)' ) g09_AOShell(:)%map
             exit
@@ -118,7 +118,7 @@ subroutine g09_calcInfo( fch )
 
     ! read the total energy
     do 
-        read( fno, '(a)', end = 1008 ), read_line
+        read( fno, '(a)', end = 1008 ) read_line
         if ( index( read_line, 'Total Energy' ) .ne. 0 ) then
             read( read_line, '(49x, E22.15)' ) g09_task_totalEnergy
             exit

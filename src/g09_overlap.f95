@@ -29,7 +29,7 @@ subroutine g09_overlap( logf )
 
     ! read the overlap matrix 
     do
-        read( fno, '(a)', end = 1001 ), read_line
+        read( fno, '(a)', end = 1001 ) read_line
         if ( index( read_line , '*** Overlap ***' ) .ne. 0 ) then
             do 
                 ! first read the column numbers. The formatting in the
@@ -40,7 +40,7 @@ subroutine g09_overlap( logf )
                 102 continue
                 ! read the info in each row
                 do
-                    read ( fno, '(i8, 5D14.6)', end=103 ), row,   &
+                    read ( fno, '(i8, 5D14.6)', end=103 ) row,   &
                         (overlap( row, col(i) ), i = 1,           &
                              maxval( col(:) - col(1) ) + 1 )
                     103 continue

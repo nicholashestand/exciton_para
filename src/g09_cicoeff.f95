@@ -33,10 +33,10 @@ subroutine g09_cicoeff( logf, exstate )
     ! write the line to search for in the log file
     write( matchline, '(a13,i4)' ) 'Excited State', exstate
     do
-        read( fno, '(a)', end = 1001 ), read_line
+        read( fno, '(a)', end = 1001 ) read_line
         if ( index( read_line , trim(matchline) ) .ne. 0 ) then
             do 
-                read( fno, '(a)' ), read_line
+                read( fno, '(a)' ) read_line
                 ! store ci coefficients, or exit if we have read past them
                 if ( index( read_line, '->' ) .ne. 0 ) then
                     read( read_line, '(i9,2x,i9,f10.5)' ) i, j, cic( i, j )
