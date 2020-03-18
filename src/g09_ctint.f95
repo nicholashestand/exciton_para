@@ -42,7 +42,7 @@ program g09_ctint
     call g09_calcInfo(fch_m2)
     baseN2 = g09_task_numBasisFunctions
     baseN2u = g09_task_numBasisFunctionsUsed
-    homo2 = ceiling(g09_task_numElectrons/2.d0) + baseN1u
+    homo2 = ceiling(g09_task_numElectrons/2.d0) + baseN2u
     lumo2 = homo2 + 1
     call g09_mocoeff(fch_m2)
     call g09_overlap(log_m2)
