@@ -247,8 +247,8 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
     integer nargs, narg, ios, line, pos
     integer, parameter :: fno = 67, fno2 = 68
     character(2) nproc
-    character(100) arg, fin, label, fxyzm1, fxyzm2, task, method
-    character(100) buff
+    character(200) arg, fin, label, fxyzm1, fxyzm2, task, method
+    character(200) buff
     logical exists, makeinput
 
     makeinput = .false.
@@ -406,6 +406,8 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         ! the calculation for molecule 1
         open( unit = fno, file = trim(adjustl(task))//'_m1.gjf', &
               action = 'write' )
+        write( fno, * ) '%RWF='//trim(adjustl(task))//'_m1.rwf'
+        write( fno, * ) '%NoSave'
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_m1.chk'
         write( fno, * ) '%NProcShared='//trim(adjustl(nproc))
         write( fno, * ) '%mem=1GB'
@@ -432,6 +434,8 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         ! the calculation for molecule 2
         open( unit = fno, file = trim(adjustl(task))//'_m2.gjf', &
               action = 'write' )
+        write( fno, * ) '%RWF='//trim(adjustl(task))//'_m2.rwf'
+        write( fno, * ) '%NoSave'
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_m2.chk'
         write( fno, * ) '%NProcShared='//trim(adjustl(nproc))
         write( fno, * ) '%mem=1GB'
@@ -458,6 +462,8 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         ! the calculation for the dimer
         open( unit = fno, file = trim(adjustl(task))//'_d.gjf', &
               action = 'write' )
+        write( fno, * ) '%RWF='//trim(adjustl(task))//'_d.rwf'
+        write( fno, * ) '%NoSave'
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_d.chk'
         write( fno, * ) '%NProcShared='//trim(adjustl(nproc))
         write( fno, * ) '%mem=1GB'
