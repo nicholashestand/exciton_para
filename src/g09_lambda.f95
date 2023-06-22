@@ -171,9 +171,9 @@ program g09_lambda
                                       freqeff/hreff
         end if
         close( fno ) 
-        print*, 
+        print*  
         print*, '>> Wrote output to file: ', trim(adjustl(fout))
-        print*,
+        print* 
     end if
 
     
@@ -416,7 +416,7 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
         stop
     else
     ! read the input file
-        print*,
+        print* 
         print*, 'Reading input file: ', trim(adjustl(fin))
         open( unit = fno, file = fin, action = 'read' )
         line = 0
@@ -476,7 +476,7 @@ subroutine lambda_init(fch_g, fch_e, fch_a, fch_c, fout, lbnd,  ubnd)
             end if
         end do
         close( fno )
-        print*, 
+        print*  
     end if
 
     if ( makeinput ) then
@@ -594,15 +594,15 @@ end subroutine
 subroutine print_help()
     implicit none
 
-    print*, 
+    print*  
     print*, ' g09_lambda version 1.0'
-    print*, 
+    print*  
     print*, ' This program calculates the vibronic coupling parameter for '
     print*, ' each  vibrational mode of a molecule  using  the  formatted '
     print*, ' checckpoint file from Gaussian09 output.'
-    print*,
+    print* 
     print*, ' Usage:'
-    print*,
+    print* 
     print*, ' -- help, -h: print this message'
     print*, ' -i file    : specifies the input file containing the names '
     print*, '              of the formatted checkpoing files. If the  -m '
@@ -618,7 +618,7 @@ subroutine print_help()
     print*, '              with this program.  Note that  the  formatted '
     print*, '              checkpoint  file  needs  to  be  made  by the '
     print*, '              Gaussian formchk utility.'
-    print*, 
+    print*  
     print*, ' To use this  program to  calculate the  vibronic  coupling '
     print*, ' parameters you must  first  run  a  geometry  optimization '
     print*, ' in  Gaussian 09 of the  reference  (ground)  and displaced '
@@ -628,12 +628,10 @@ subroutine print_help()
     print*, ' used to generate the appropriate Gaussian 09  input  files '
     print*, ' if a xyz coordinate file for the molecule of  interest  is '
     print*, ' provided.'
-    print*, 
+    print*  
     print*, ' The  resulting  checkpoing  files  must  be  converted  to '
     print*, ' formatted checkpoint files using the Gaussian 09 formcheck '
     print*, ' utility before they can be read by this program.'
-    print*,
+    print* 
 
 end subroutine
-
-

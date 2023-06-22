@@ -221,7 +221,7 @@ subroutine init( tqf, fout, npoints, startdx, dx )
         stop
     else
     ! read the input file
-        print*,
+        print* 
         print*, 'Reading input file: ', trim(adjustl(fin))
         open( unit = fno, file = fin, action = 'read' )
         line = 0
@@ -268,7 +268,7 @@ subroutine init( tqf, fout, npoints, startdx, dx )
         startdx(1) = startdx(1) / bohr_to_angstrom
         startdx(2) = startdx(2) / bohr_to_angstrom
         startdx(3) = startdx(3) / bohr_to_angstrom
-        print*, 
+        print*  
     end if
 
 end subroutine
@@ -281,23 +281,21 @@ end subroutine
 subroutine print_help()
     implicit none
     
-    print*, 
+    print*  
     print*, ' g09_calc_cpl_from_tq version 1.0'
-    print*, 
+    print*  
     print*, ' This  program  calculates  the coulombic coupling from     '
     print*, ' transition charges calculated from g09_tq assuming two     '
     print*, ' identical molecules experincing some displacement.         '
-    print*,
+    print* 
     print*, ' Usage:'
-    print*,
+    print* 
     print*, ' -- help, -h: print this message'
     print*, ' -i file    : specifies the input file containing the  name '
     print*, '              of the tq file from g09_tq and the parameters '
     print*, '              for the scan.                                 '
     print*, ' -o file    : specifies the output file'
-    print*, 
-    print*,
+    print*  
+    print* 
 
 end subroutine
-
-

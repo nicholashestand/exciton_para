@@ -103,7 +103,7 @@ program g09_tq
                                          tq_mu(2), tq_mu(3)
 
     print*, '>> Wrote output to file ', trim(adjustl(fout))
-    print*, 
+    print* 
 
 end program
 
@@ -308,7 +308,7 @@ subroutine tq_init(fch, logf, fout, estate )
         stop
     else
     ! read the input file
-        print*,
+        print* 
         print*, 'Reading input file: ', trim(adjustl(fin))
         open( unit = fno, file = fin, action = 'read' )
         line = 0
@@ -356,7 +356,7 @@ subroutine tq_init(fch, logf, fout, estate )
             end if
         end do
         close( fno )
-        print*, 
+        print*  
     end if
 
     if ( makeinput ) then
@@ -409,15 +409,15 @@ end subroutine
 subroutine print_help()
     implicit none
 
-    print*, 
+    print*  
     print*, ' g09_tq version 1.0'
-    print*, 
+    print*  
     print*, ' This  program  calculates  the transition  charges  for  a '
     print*, ' specified excited state  of a  molecule.  The  calculation '
     print*, ' uses output from a Gaussian 09 calculation.'
-    print*,
+    print* 
     print*, ' Usage:'
-    print*,
+    print* 
     print*, ' -- help, -h: print this message'
     print*, ' -i file    : specifies the input file containing the names '
     print*, '              of the formatted checkpoint and log files. If '
@@ -427,18 +427,18 @@ subroutine print_help()
     print*, ' -o file    : specifies the output file'
     print*, ' -m         : makes one Gaussian 09 input files from  a xyz '
     print*, '              files of atomic coordinates.'
-    print*, 
+    print*  
     print*, ' To  use  this  program to calculate the transition charges '
     print*, ' you  must  first  run  an  excited  state  calculation  in '
     print*, ' Gaussian 09 of the molecule of interest. The -m  option of '
     print*, ' this program can  be  used  to  generate  the  appropriate '
     print*, ' Gaussian 09 input files if xyz  coordinate files  for  the '
     print*, ' molecule of interest is provided.'
-    print*, 
+    print*  
     print*, ' The  resulting  checkpoint  file   must  be  converted  to '
     print*, ' formatted checkpoint files using the Gaussian 09 formcheck '
     print*, ' utility before  it  can be read by this program.'
-    print*,
+    print* 
 
 end subroutine
 

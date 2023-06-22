@@ -112,9 +112,9 @@ program g09_ctint
 
     close( fno )
 
-    print*, 
+    print*  
     print*, '>> Wrote output to file ', trim(adjustl(fout))
-    print*, 
+    print*  
 
 end program
 
@@ -323,7 +323,7 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         stop
     else
     ! read the input file
-        print*,
+        print* 
         print*, 'Reading input file: ', trim(adjustl(fin))
         open( unit = fno, file = fin, action = 'read' )
         line = 0
@@ -383,7 +383,7 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
             end if
         end do
         close( fno )
-        print*, 
+        print*  
     end if
 
     if ( makeinput ) then
@@ -506,16 +506,16 @@ end subroutine
 subroutine print_help()
     implicit none
 
-    print*, 
+    print*  
     print*, ' g09_ctint version 1.0'
-    print*, 
+    print*  
     print*, ' This  program  calculates  the charge  transfer  integrals '
     print*, ' between two molecules by transforming the Hamiltonian into '
     print*, ' the molecular orbital basis.  The calculation  uses output '
     print*, ' from a Gaussian 09 calculation.'
-    print*,
+    print* 
     print*, ' Usage:'
-    print*,
+    print* 
     print*, ' -- help, -h: print this message'
     print*, ' -i file    : specifies the input file containing the names '
     print*, '              of the formatted checkpoint files. If the  -m '
@@ -531,7 +531,7 @@ subroutine print_help()
     print*, '              be used directly with this program. Note that '
     print*, '              the formatted checkpoint  file  needs  to  be '
     print*, '              made by the Gaussian 09 formchk utility.'
-    print*, 
+    print*  
     print*, ' To  use  this  program  to  calculate  the charge transfer '
     print*, ' integrals, you must first run single point calculations in '
     print*, ' Gaussian 09 of the two molecules of interest and  a single '
@@ -539,12 +539,10 @@ subroutine print_help()
     print*, ' this program can  be  used  to  generate  the  appropriate '
     print*, ' Gaussian 09 input files if xyz  coordinate files  for  the '
     print*, ' molecules of interest are provided.'
-    print*, 
+    print*  
     print*, ' The  resulting  checkpoint  files  must  be  converted  to '
     print*, ' formatted checkpoint files using the Gaussian 09 formcheck '
     print*, ' utility before they can be read by this program.'
-    print*,
+    print* 
 
 end subroutine
-
-
