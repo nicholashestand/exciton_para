@@ -29,7 +29,7 @@ subroutine g09_mocoeff( fch )
     if ( allocated( moe ) ) deallocate(moe)
     allocate( moe( g09_task_numBasisFunctions ) )
     do
-        read( fno, '(a)', end = 1001 ), read_line
+        read( fno, '(a)', end = 1001 ) read_line
         if ( index( read_line , 'Alpha Orbital Energies' ) .ne. 0 ) then
             read( fno, '(5E16.8)' ) moe(:)
             exit
@@ -42,7 +42,7 @@ subroutine g09_mocoeff( fch )
 
     ! read the hessian matrix in upper triangular form
     do
-        read( fno, '(a)', end = 1002 ), read_line
+        read( fno, '(a)', end = 1002 ) read_line
         if ( index( read_line , 'Alpha MO coefficients' ) .ne. 0 ) then
             read( fno, '(5E16.8)' ) moc(:,:)
             exit

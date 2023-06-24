@@ -45,7 +45,7 @@ subroutine calc_cpl_from_tq( tqf, fout, npoints, startdx, dx )
     allocate( g09_atom1( numAtoms1 ), tq1( numAtoms1 ) )
     read( fno, '(X)' )
     do p1 = 1, numAtoms1
-        read( fno, '(5X, 4(f14.7, X))' ), g09_atom1(p1)%x, &
+        read( fno, '(5X, 4(f14.7, X))' ) g09_atom1(p1)%x, &
             g09_atom1(p1)%y, g09_atom1(p1)%z, tq1(p1)
     end do
     close( fno )
