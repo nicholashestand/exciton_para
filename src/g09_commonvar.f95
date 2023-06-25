@@ -14,6 +14,7 @@ module g09_commonvar
     integer :: g09_task_numAtoms
     integer :: g09_task_numElectrons
     integer :: g09_task_numBasisFunctions
+    integer :: g09_task_numBasisFunctionsUsed
     integer :: g09_task_numAOShells
     integer :: g09_task_dof
 
@@ -44,6 +45,7 @@ module g09_commonvar
     real(8), allocatable :: moe(:)
     real(8), allocatable :: overlap(:,:)
     real(8), allocatable :: cic(:,:)
+    real(8), allocatable :: fock(:,:)
 
     ! constants
     ! pi

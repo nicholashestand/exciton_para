@@ -8,12 +8,14 @@ program g09_ctint
 
     character(200) :: fch_m1, log_m1, fch_m2, log_m2,   &
                       fch_d, log_d, fout
-    real(8), allocatable :: s1(:,:), s2(:,:), sd(:,:),          &
+    real(8), allocatable :: sd(:,:),          &
                             m1moc(:,:), m2moc(:,:), mdmoc(:,:), &
                             m12moc(:,:), mdmoe(:,:), SMO(:,:),  & 
                             mdmocinv(:,:), HAO(:,:), HMO(:,:)
     real(8) Hsub(4,4), Ssub(4,4)
-    integer homo1, homo2, lumo1, lumo2, i, baseN1, baseN2, baseNd, j
+    integer homo1, homo2, lumo1, lumo2, i, j
+    integer baseN1, baseN2, baseNd
+    integer baseN1u, baseN2u, baseNdu
     integer, parameter :: fno = 103
 
 
@@ -28,65 +30,56 @@ program g09_ctint
     ! only one set of orbitals is calculated for the setup given with
     ! the -m option
     baseN1 = g09_task_numBasisFunctions
+    baseN1u = g09_task_numBasisFunctionsUsed
     homo1 = ceiling(g09_task_numElectrons/2.d0)
     lumo1 = homo1 + 1
     call g09_mocoeff(fch_m1)
-    call g09_overlap(log_m1)
-    ! allocate space for the matrices
-    allocate( s1( baseN1, baseN1 ), m1moc( baseN1, baseN1 ))
-    s1 = overlap
+    ! allocate space for the matrices (baseN1 rows, baseN1u cols)
+    allocate( m1moc( baseN1, baseN1u ))
     m1moc = moc
 
     print*, '>> Getting info about molecule 2.'
     call g09_calcInfo(fch_m2)
     baseN2 = g09_task_numBasisFunctions
-    homo2 = ceiling(g09_task_numElectrons/2.d0) + baseN1
+    baseN2u = g09_task_numBasisFunctionsUsed
+    homo2 = ceiling(g09_task_numElectrons/2.d0) + baseN1u
     lumo2 = homo2 + 1
     call g09_mocoeff(fch_m2)
     call g09_overlap(log_m2)
-    ! allocate space for the matrices
-    allocate( s2( baseN2, baseN2 ), m2moc( baseN2, baseN2 ))
-    s2 = overlap
+    ! allocate space for the matrices (baseN2 rows, baseN1u cols)
+    allocate( m2moc( baseN2, baseN2u ))
     m2moc = moc
 
     print*, '>> Getting info about the dimer.'
     call g09_calcInfo(fch_d)
     baseNd = g09_task_numBasisFunctions
-    call g09_mocoeff(fch_d)
+    baseNdu= g09_task_numBasisFunctionsUsed
+    call g09_fock(log_d)
     call g09_overlap(log_d)
     ! allocate space for the matrices
-    allocate( sd( baseNd, baseNd ) , mdmoc( baseNd, baseNd ),&
-           m12moc( baseNd, baseNd ), mdmoe( baseNd, baseNd ),&
-           HAO( baseNd, baseNd ), HMO( baseNd, baseNd ),     &
-           SMO( baseNd, baseNd ), mdmocinv( baseNd, baseNd ) )
+    allocate( sd( baseNd, baseNd ) , HAO( baseNd, baseNd ),&
+           m12moc( baseN1+baseN2, baseN1u+baseN2u )       ,&
+           HMO( baseN1u+baseN2u, baseN1u+baseN2u )        ,&
+           SMO( baseN1u+baseN2u, baseN1u+baseN2u ) )
     sd = overlap
-    mdmoc = moc
-    mdmoe = 0.d0
-    do i = 1, baseNd
-        mdmoe(i,i) = moe(i)*Hartree_to_cm
-    end do
+    HAO = fock*hartree_to_cm
 
     ! combine the matrices for the monomer mos into one matrix
     m12moc = 0.d0
-    m12moc( 1:baseN1, 1:baseN1 ) = m1moc(:,:)
-    m12moc( baseN1+1:baseN1+baseN2, baseN1+1:baseN1+baseN2 ) = m2moc(:,:)
+    m12moc( 1:baseN1, 1:baseN1u ) = m1moc(:,:)
+    m12moc( baseN1+1:baseN1+baseN2, baseN1u+1:baseN1u+baseN2u ) = m2moc(:,:)
 
-    ! calculate the dimer hamiltonian in the atomic orbital basis
-    ! by back transforming the eigenvalues
-    call find_inverse( mdmoc, baseNd, mdmocinv )
-    HAO = matmul( matmul( matmul( sd, mdmoc ) , mdmoe ) , mdmocinv )
-
-    ! mow project the Hamiltonian onto the molecular orbital basis set
+    ! project the Hamiltonian onto the molecular orbital basis set
     HMO = matmul( matmul( transpose(m12moc), HAO ), m12moc )
     ! and the overlap matrix
     SMO = matmul( matmul( transpose(m12moc), sd ), m12moc )
 
     ! get submatrices with just the important MOs for us
     call get_submatrix( HMO, SMO, Hsub, Ssub, homo1, homo2, lumo1, lumo2, &
-                        g09_task_numBasisFunctions )
+                        baseN1u+baseN2u)
 
     ! write out the orthogonalized and nonorthogonalized Hamiltonian
-    open( unit = fno, file = trim(fout), status='new', action='write')
+    open( unit = fno, file = trim(fout), action='write')
     write( fno, * ) 'Nonorthogonal Sub Hamiltonian (cm-1)'
     write( fno, * ) ',|HOMO1>,|HOMO2>,|LUMO1>,|LUMO2>'
     write( fno, '(a,4(",",f14.4))' ) '<HOMO1|',(Hsub(1,i),i=1,4)
@@ -253,8 +246,9 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
                                    fch_d, log_d, fout
     integer nargs, narg, ios, line, pos
     integer, parameter :: fno = 67, fno2 = 68
-    character(100) arg, fin, label, fxyzm1, fxyzm2, task, method
-    character(100) buff
+    character(2) nproc
+    character(200) arg, fin, label, fxyzm1, fxyzm2, task, method
+    character(200) buff
     logical exists, makeinput
 
     makeinput = .false.
@@ -262,6 +256,7 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
     fout = ''
     fxyzm1 = ''
     fxyzm2 = ''
+    nproc = '1'
 
     ! check if any command line arguments are found
     nargs = command_argument_count()
@@ -376,6 +371,9 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
                     case('xyz_file_m2')
                         read( buff, *, iostat = ios ) fxyzm2
                         print*, 'fxyzm1: ', trim(adjustl(fxyzm2))
+                    case('nproc')
+                        read( buff, *, iostat = ios ) nproc
+                        print*, 'nproc : ', trim(adjustl(nproc))
                     case default
                         print*, 'Label ', trim(adjustl(label)), &
                                 ' unknown'
@@ -408,8 +406,10 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         ! the calculation for molecule 1
         open( unit = fno, file = trim(adjustl(task))//'_m1.gjf', &
               action = 'write' )
+        write( fno, * ) '%RWF='//trim(adjustl(task))//'_m1.rwf'
+        write( fno, * ) '%NoSave'
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_m1.chk'
-        write( fno, * ) '%NProcShared=4'
+        write( fno, * ) '%NProcShared='//trim(adjustl(nproc))
         write( fno, * ) '%mem=1GB'
         write( fno, * ) '# SP '//trim(method)//' IOP(3/33=1) IOP(6/7=3) '//&
                         'Symmetry=None MaxDisk=2GB'
@@ -434,8 +434,10 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         ! the calculation for molecule 2
         open( unit = fno, file = trim(adjustl(task))//'_m2.gjf', &
               action = 'write' )
+        write( fno, * ) '%RWF='//trim(adjustl(task))//'_m2.rwf'
+        write( fno, * ) '%NoSave'
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_m2.chk'
-        write( fno, * ) '%NProcShared=4'
+        write( fno, * ) '%NProcShared='//trim(adjustl(nproc))
         write( fno, * ) '%mem=1GB'
         write( fno, * ) '# SP '//trim(method)//' IOP(3/33=1) IOP(6/7=3) '//&
                         'Symmetry=None MaxDisk=2GB'
@@ -460,10 +462,12 @@ subroutine ctint_init(fch_m1, log_m1, fch_m2, log_m2, fch_d, log_d, &
         ! the calculation for the dimer
         open( unit = fno, file = trim(adjustl(task))//'_d.gjf', &
               action = 'write' )
+        write( fno, * ) '%RWF='//trim(adjustl(task))//'_d.rwf'
+        write( fno, * ) '%NoSave'
         write( fno, * ) '%Chk='//trim(adjustl(task))//'_d.chk'
-        write( fno, * ) '%NProcShared=4'
+        write( fno, * ) '%NProcShared='//trim(adjustl(nproc))
         write( fno, * ) '%mem=1GB'
-        write( fno, * ) '# SP '//trim(method)//' IOP(3/33=1) IOP(6/7=3) '//&
+        write( fno, * ) '# SP '//trim(method)//' IOP(3/33=1) IOP(6/7=3) IOP(5/33=3) '//&
                         'Symmetry=None MaxDisk=2GB'
         write( fno, * )
         write( fno, * ) trim(adjustl(task))//'_d'
